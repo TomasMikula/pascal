@@ -1,0 +1,25 @@
+sudo: false
+
+language: scala
+
+scala:
+- 2.10.6
+- 2.11.11
+- 2.12.2
+- 2.13.0-M1
+
+jdk:
+- oraclejdk8
+
+script:
+ - sbt ++${TRAVIS_SCALA_VERSION} clean test
+
+ # Avoid unnecessary cache updates
+ - find $HOME/.sbt -name "*.lock" -delete
+ - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot
+    - $HOME/.sbt/launchers/0.13.13

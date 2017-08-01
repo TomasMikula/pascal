@@ -1,0 +1,4 @@
+<plugin>
+  <name>pascal</name>
+  <classname>pascal.PascalPlugin</classname>
+</plugin>
