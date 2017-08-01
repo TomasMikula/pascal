@@ -51,3 +51,52 @@ scalacOptions in Test ++= {
 scalacOptions in Test += "-Yrangepos"
 
 fork in Test := true
+
+
+/******************
+ *** Publishing ***
+ ******************/
+
+import ReleaseTransformations._
+
+releaseCrossBuild := true
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
+publishArtifact in Test := false
+publishMavenStyle := true
+pomIncludeRepository := Function.const(false)
+
+publishTo := {
+  val nexus = "https://oss.sonatype.org/"
+  if (isSnapshot.value)
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+}
+
+pomExtra := (
+  <scm>
+    <url>git@github.com:TomasMikula/pascal.git</url>
+    <connection>scm:git:git@github.com:TomasMikula/pascal.git</connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>TomasMikula</id>
+      <name>Tomas Mikula</name>
+      <url>http://github.com/TomasMikula/</url>
+    </developer>
+  </developers>
+)
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  publishArtifacts,
+  setNextVersion,
+  commitNextVersion,
+  ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+  pushChanges)
