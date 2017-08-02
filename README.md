@@ -56,14 +56,18 @@ identity[Int](42)
 
 Now `identity` is a _value_ that can be freely passed to other methods or functions.
 
-This encoding, however, has several drawbacks
- - **Verbose syntax** for creating polymorphic values.
- - Requires a **dedicated wrapper type for each arity** of type parameters.
-   In the example above, we used `ForAll[F[_, _]]`, but elsewhere we might also need
+This encoding, however, has several drawbacks:
+ 1. **Verbose syntax** for creating polymorphic values (an anonymous class implementing the interface).
+ 1. Requires a **dedicated wrapper type for each arity** of type parameters.
+   In the example above, we used `ForAll[F[_]]`, but elsewhere we might also need
    `ForAll2[F[_, _]]`, `ForAllH[F[_[_]]]`, etc.
- - Specialization of polymorphic values (`ForAll[F]`) to a specific type (e.g. `F[Int]`) may in general **allocate new objects.**
+ 1. Specialization of polymorphic values (`ForAll[F]`) to a specific type (e.g. `F[Int]`) may in general **allocate new objects.**
 
 This project addresses (only) the first problem, namely the verbosity of polymorphic value creation.
+
+The second problem would be addressed by kind-polymorphism (which, unfortunately, Scala also lacks).
+
+The third problem can be addressed by other methods, e.g. https://github.com/scalaz/scalaz/pull/1417.
 
 ## More concise syntax
 
@@ -79,6 +83,7 @@ is analogous to System F's
 ```
 Λα. t : T
 ```
+(where `T` is of the form `∀α. U`)
 and is rewritten to 
 ```scala
 new T { def apply[α] = t }
