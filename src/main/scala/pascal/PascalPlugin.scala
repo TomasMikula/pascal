@@ -81,14 +81,19 @@ class Rewriter(val global: Global) extends PluginComponent with Transform with T
     }
 
     def polyVal(tree: Tree): Tree = tree match {
-      case PolyVal(targetType, methodName, tArgs, body) =>
+      case PolyVal(targetType, methodName, tArgs, selfRef, body) =>
+        val self = selfRef match {
+          case Some(name) => ValDef(Modifiers(), name, TypeTree(), EmptyTree)
+          case None       => ValDef(Modifiers(), nme.WILDCARD, TypeTree(), EmptyTree)
+        }
+
         atPos(tree.pos.makeTransparent)(tArgs match {
           case Nil =>
             val tParam = newTypeName(freshName("A"))
-            q"new $targetType { def $methodName[$tParam] = $body }"
+            q"new $targetType { $self => def $methodName[$tParam] = $body }"
           case _ =>
             val tParams = tArgs.map(typeArgToTypeParam)
-            q"new $targetType { def $methodName[..$tParams] = $body }"
+            q"new $targetType { $self => def $methodName[..$tParams] = $body }"
         })
       case _ => tree
     }
@@ -119,25 +124,38 @@ class Rewriter(val global: Global) extends PluginComponent with Transform with T
       case _                                                    => None
     }
   }
+  object Body {
+    def unapply(tree: Tree): Option[(Option[TermName], Tree)] = tree match {
+      case AssignOrNamedArg(Ident(name), body) => Some((Some(name.toTermName), body))
+      case body                                => Some((None,                  body))
+    }
+  }
   object PolyVal {
-    def unapply(tree: Tree): Option[(Tree, TermName, List[Tree], Tree)] = tree match {
+    //                               type, method  ,type params, self reference  , body
+    def unapply(tree: Tree): Option[(Tree, TermName, List[Tree], Option[TermName], Tree)] = tree match {
 
       // Λ[A, B, ...](e) : T
-      case Typed(TermLambda(tParams, body), tpe)                                   => Some((tpe, nme.apply, tParams, body))
+      case Typed(TermLambda(tParams, Body(self, body)), tpe)                                   =>
+        Some((tpe, nme.apply, tParams, self, body))
 
       // ν[T].method[A, B, ...](e)
-      case Apply(TypeApply(Select(TermNuType(tpe), method), tParams), body :: Nil) => Some((tpe, method.toTermName, tParams, body))
+      case Apply(TypeApply(Select(TermNuType(tpe), method), tParams), Body(self, body) :: Nil) =>
+        Some((tpe, method.toTermName, tParams, self, body))
 
       // ν[T][A, B, ...](e)
-      case Apply(TypeApply(TermNuType(tpe), tParams), body :: Nil)                 => Some((tpe, nme.apply, tParams, body))
+      case Apply(TypeApply(TermNuType(tpe), tParams), Body(self, body) :: Nil)                 =>
+        Some((tpe, nme.apply, tParams, self, body))
 
       // ν[T].method(e)
-      case Apply(Select(TermNuType(tpe), method), body :: Nil)                     => Some((tpe, method.toTermName, Nil, body))
+      case Apply(Select(TermNuType(tpe), method), Body(self, body) :: Nil)                     =>
+        Some((tpe, method.toTermName, Nil, self, body))
 
       // ν[T](e)
-      case Apply(TermNuType(tpe), body :: Nil)                                     => Some((tpe, nme.apply, Nil, body))
+      case Apply(TermNuType(tpe), Body(self, body) :: Nil)                                     =>
+        Some((tpe, nme.apply, Nil, self, body))
 
-      case _                                                                       => None
+      case _                                                                                   =>
+        None
     }
   }
 }

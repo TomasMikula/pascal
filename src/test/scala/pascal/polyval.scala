@@ -90,6 +90,16 @@ class PolyVals extends FunSuite {
     assert(fun[String, Int](_.length).run("foo") == 3)
   }
 
+  test("recursive natural transformation") {
+    val lastOption = ν[List ~> Option](self = _ match {
+      case a :: Nil => Some(a)
+      case a :: as  => self.apply(as)
+      case Nil      => None
+    })
+
+    assert(lastOption[Int](List(1, 2, 3, 4, 5)) == Some(5))
+  }
+
   test("Const") {
     val const42 = ν[ConstA[Int]][B](new Const[Int, B](42))
     val constMaker  = ν[ConstMaker1][A   ](a => ν[ConstA[A]][B](new Const[A, B](a)))
