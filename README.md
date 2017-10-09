@@ -148,18 +148,35 @@ new T { def foo[A, B[_], ...] = t }
 
 See the [test cases](https://github.com/TomasMikula/pascal/blob/master/src/test/scala/pascal/polyval.scala) for some examples.
 
+### Self-references
+
+It is possible for a polymorphic value to reference itself. For this, add a self-identifier and '`=`' before the polymorphic body. For example:
+
+```scala
+ν[T].foo[A](self = t)
+
+```
+
+where the term `t` can use the identifier `self` to refer to itself. It is rewritten to
+
+```scala
+new T { self =>
+  def foo[A] = t
+}
+```
+
 ## Using the plugin
 
 To use this plugin in your project, add the following line to your `build.sbt` file:
 
 ```scala
-addCompilerPlugin("com.github.tomasmikula" %% "pascal" % "0.1")
+addCompilerPlugin("com.github.tomasmikula" %% "pascal" % "0.2")
 ```
 
 If your project uses multiple Scala versions, use this for cross building instead
 
 ```scala
-addCompilerPlugin("com.github.tomasmikula" % "pascal" % "0.1" cross CrossVersion.binary)
+addCompilerPlugin("com.github.tomasmikula" % "pascal" % "0.2" cross CrossVersion.binary)
 ```
 
 If your project uses Scala 2.10, also add
