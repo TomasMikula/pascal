@@ -4,13 +4,13 @@ licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 homepage := Some(url("http://github.com/TomasMikula/pascal"))
 
 scalaVersion := "2.11.11"
-crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.3", "2.13.0-M1")
+crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.4", "2.13.0-M2")
 
-addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4")
+addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.5")
 
 libraryDependencies ++= Seq(
   scalaOrganization.value % "scala-compiler" % scalaVersion.value,
-  "org.scalatest" %% "scalatest" % "3.0.3" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.4" % "test"
 )
 
 libraryDependencies ++= (scalaBinaryVersion.value match {
@@ -95,8 +95,8 @@ releaseProcess := Seq[ReleaseStep](
   setReleaseVersion,
   commitReleaseVersion,
   tagRelease,
-  publishArtifacts,
+  releaseStepCommand("publishSigned"),
   setNextVersion,
   commitNextVersion,
-  ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+  releaseStepCommand("sonatypeReleaseAll"),
   pushChanges)
