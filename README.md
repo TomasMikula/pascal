@@ -170,13 +170,13 @@ new T { self =>
 To use this plugin in your project, add the following line to your `build.sbt` file:
 
 ```scala
-addCompilerPlugin("com.github.tomasmikula" %% "pascal" % "0.2")
+addCompilerPlugin("com.github.tomasmikula" %% "pascal" % "0.3")
 ```
 
 If your project uses multiple Scala versions, use this for cross building instead
 
 ```scala
-addCompilerPlugin("com.github.tomasmikula" % "pascal" % "0.2" cross CrossVersion.binary)
+addCompilerPlugin("com.github.tomasmikula" % "pascal" % "0.3" cross CrossVersion.binary)
 ```
 
 If your project uses Scala 2.10, also add
