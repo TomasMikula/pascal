@@ -15,7 +15,7 @@ class PascalPlugin(val global: Global) extends Plugin {
   val components = new Rewriter(global) :: Nil
 }
 
-class Rewriter(val global: Global) extends PluginComponent with Transform with TypingTransformers {
+class Rewriter(val global: Global) extends PluginComponent with Transform with TypingTransformers with Compat {
   import global._
 
   val phaseName = "universals"
