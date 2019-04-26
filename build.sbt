@@ -4,7 +4,7 @@ licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 homepage := Some(url("http://github.com/TomasMikula/pascal"))
 
 scalaVersion := "2.12.8"
-crossScalaVersions := Seq("2.10.6", "2.11.12", "2.12.8", "2.13.0-RC1")
+crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.8", "2.13.0-RC1")
 
 unmanagedSourceDirectories in Compile += {
   CrossVersion.partialVersion(scalaVersion.value) match {
