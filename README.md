@@ -7,7 +7,7 @@ A _polymorphic_ (also _universally quantified_) value `a` of type `∀A. F[A]` i
 as a value of type `F[A]` for _any_ type `A`. That is, a _single_ value that is an instance of
 `F[Int]`, `F[String]`, `F[List[Boolean]]`, ... simultaneously.
 
-Parametric polymorhpism was introduced in [System F](https://en.wikipedia.org/wiki/System_F) with the following syntax:
+Parametric polymorphism was introduced in [System F](https://en.wikipedia.org/wiki/System_F) with the following syntax:
 
 ```
 Λα. t : ∀α. T
