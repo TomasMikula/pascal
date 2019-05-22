@@ -15,7 +15,7 @@ unmanagedSourceDirectories in Compile += {
   }
 }
 
-addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.0")
+addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.1")
 
 libraryDependencies ++= Seq(
   scalaOrganization.value % "scala-compiler" % scalaVersion.value,
