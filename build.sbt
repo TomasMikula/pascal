@@ -19,7 +19,7 @@ addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.1")
 
 libraryDependencies ++= Seq(
   scalaOrganization.value % "scala-compiler" % scalaVersion.value,
-  "org.scalatest" %% "scalatest" % "3.0.8-RC2" % Test
+  "org.scalatest" %% "scalatest" % "3.0.8-RC4" % Test
 )
 
 libraryDependencies ++= (scalaBinaryVersion.value match {
