@@ -4,7 +4,12 @@ licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 homepage := Some(url("http://github.com/TomasMikula/pascal"))
 
 scalaVersion := "2.12.8"
-crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.8", "2.13.0")
+crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.8", "2.12.9", "2.12.10", "2.13.0", "2.13.1", "2.13.2")
+crossVersion := CrossVersion.full
+crossTarget := {
+  // workarond for https://github.com/sbt/sbt/issues/5097
+  target.value / s"scala-${scalaVersion.value}"
+}
 
 unmanagedSourceDirectories in Compile += {
   CrossVersion.partialVersion(scalaVersion.value) match {
@@ -15,7 +20,7 @@ unmanagedSourceDirectories in Compile += {
   }
 }
 
-addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3")
+addCompilerPlugin("org.typelevel" % "kind-projector" % "0.11.0" cross CrossVersion.full)
 
 libraryDependencies ++= Seq(
   scalaOrganization.value % "scala-compiler" % scalaVersion.value,
@@ -33,7 +38,7 @@ def scala210ExtraDeps = Seq(
 )
 
 scalacOptions ++= Seq(
-  "-Xfatal-warnings",
+  //"-Xfatal-warnings",
   "-Xlint",
   "-feature",
   "-language:higherKinds",
