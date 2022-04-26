@@ -173,17 +173,6 @@ To use this plugin in your project, add the following line to your `build.sbt` f
 addCompilerPlugin("com.github.tomasmikula" % "pascal" % "0.4.0" cross CrossVersion.full)
 ```
 
-If your project uses Scala 2.10, also add
-
-```scala
-libraryDependencies ++= (scalaBinaryVersion.value match {
-  case "2.10" =>
-    compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full) :: Nil
-  case _ =>
-    Nil
-})
-```
-
 ## Relation to `kind-projector`
 
 `kind-projector`'s [polymorphic lambdas](https://github.com/non/kind-projector#polymorphic-lambda-values)
