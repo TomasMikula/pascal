@@ -3,8 +3,8 @@ organization := "com.github.tomasmikula"
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 homepage := Some(url("http://github.com/TomasMikula/pascal"))
 
-scalaVersion := "2.12.8"
-crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.8", "2.12.9", "2.12.10", "2.13.0", "2.13.1", "2.13.2")
+scalaVersion := crossScalaVersions.value.head
+crossScalaVersions := Seq("2.12.15", "2.13.8")
 crossVersion := CrossVersion.full
 crossTarget := {
   // workarond for https://github.com/sbt/sbt/issues/5097
@@ -25,16 +25,6 @@ addCompilerPlugin("org.typelevel" % "kind-projector" % "0.11.0" cross CrossVersi
 libraryDependencies ++= Seq(
   scalaOrganization.value % "scala-compiler" % scalaVersion.value,
   "org.scalatest" %% "scalatest" % "3.0.8" % Test
-)
-
-libraryDependencies ++= (scalaBinaryVersion.value match {
-  case "2.10" => scala210ExtraDeps
-  case _      => Nil
-})
-
-def scala210ExtraDeps = Seq(
-  compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
-  "org.scalamacros" %% "quasiquotes" % "2.1.0"
 )
 
 scalacOptions ++= Seq(
