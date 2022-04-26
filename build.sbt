@@ -11,12 +11,12 @@ crossTarget := {
   target.value / s"scala-${scalaVersion.value}"
 }
 
-unmanagedSourceDirectories in Compile += {
+Compile / unmanagedSourceDirectories += {
   CrossVersion.partialVersion(scalaVersion.value) match {
     case Some((2L, v)) if v >= 13 =>
-      (baseDirectory in Compile).value / s"src/main/scala-2.13+"
+      (Compile / baseDirectory).value / s"src/main/scala-2.13+"
     case _ =>
-      (baseDirectory in Compile).value / s"src/main/scala-2.13-"
+      (Compile / baseDirectory).value / s"src/main/scala-2.13-"
   }
 }
 
@@ -50,21 +50,21 @@ List(Compile, Test) flatMap { config =>
   Seq(
     // Notice this is :=, not += - all the warning/lint options are simply
     // impediments in the repl.
-    scalacOptions in console in config := Seq(
+    config / console / scalacOptions := Seq(
       "-language:_",
-      "-Xplugin:" + (packageBin in Compile).value
+      "-Xplugin:" + (Compile / packageBin).value
     )
   )
 }
 
-scalacOptions in Test ++= {
-  val jar = (packageBin in Compile).value
+Test / scalacOptions ++= {
+  val jar = (Compile / packageBin).value
   Seq(s"-Xplugin:${jar.getAbsolutePath}", s"-Jdummy=${jar.lastModified}") // ensures recompile
 }
 
-scalacOptions in Test += "-Yrangepos"
+Test / scalacOptions += "-Yrangepos"
 
-fork in Test := true
+Test / fork := true
 
 
 /******************
@@ -75,7 +75,7 @@ import ReleaseTransformations._
 
 releaseCrossBuild := true
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
-publishArtifact in Test := false
+Test / publishArtifact := false
 publishMavenStyle := true
 pomIncludeRepository := Function.const(false)
 
