@@ -42,7 +42,7 @@ class PolyVals extends FunSuite {
 
   // Const functor and constructors
   final class Const[A, B](val getConst: A)
-  type ConstA[A] = Forall[Const[A, ?]]
+  type ConstA[A] = Forall[Const[A, *]]
   type ConstMaker1 = Forall[λ[α => α => ConstA[α]]]
   type ConstMaker2 = Forall2[λ[(α, β) => α => Const[α, β]]]
 
